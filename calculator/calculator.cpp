@@ -9,13 +9,13 @@ bool ReadNumber(Number& result) {
     if (std::cin >> result) {
         return true;
     }
-        std::cerr << "Error: Numeric operand expected" << std::endl;
-        return false;
+    std::cerr << "Error: Numeric operand expected" << std::endl;
+    return false;
 }
 
 bool RunCalculatorCycle() {
     Number total = 0; 
-    Number current_num = 0; //новое число, вводимое пользователем в выражение
+    Number current_num = 0; 
     Number memory=0;
     Number power=0; 
     bool memory_initialized = false; 
