@@ -9,27 +9,24 @@ bool ReadNumber(Number& result) {
     if (std::cin >> result) {
         return true;
     }
-    else {
         std::cerr << "Error: Numeric operand expected" << std::endl;
         return false;
-    }
 }
 
 bool RunCalculatorCycle() {
-    Number total = 0; //ответ на вычисляемое выражение
+    Number total = 0; 
     Number current_num = 0; //новое число, вводимое пользователем в выражение
-    Number memory;
-    Number power; //вспомогательная переменная для возведения в степень
-    bool memory_initialized = false; // для проверки наличия значения в памяти
-    bool checked = true;
-    std::string oper; //выполняемая операция
+    Number memory=0;
+    Number power=0; 
+    bool memory_initialized = false; 
+    std::string oper;
 
     if (!ReadNumber(total)) {
         return false;
     }
     std::cin >> oper;
 
-    while (checked) {
+    while (true) {
         if (oper == "+") {
             if (!ReadNumber(current_num)) {
                 return false;
@@ -75,7 +72,7 @@ bool RunCalculatorCycle() {
                 total = memory;
             }
             else {
-                std::cerr << "Error: Memory is empty";
+                std::cerr << "Error: Memory is empty" << std::endl;
                 return false;
             }
         }
