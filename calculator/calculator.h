@@ -4,7 +4,6 @@
     using Number = double;
 
 
-    // Реализуйте здесь класс Calculator.
 
     class Calculator{
     public:
@@ -27,5 +26,3 @@
 
     };
 
-    // Разместите тут реализацию класса Calculator из вашего решения
-    // задания темы «Классы».

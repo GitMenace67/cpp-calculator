@@ -48,23 +48,16 @@ private slots:
 
 
     void on_tb_add_clicked();
-
     void on_tb_substract_clicked();
 
     void on_tb_multiplicate_clicked();
-
     void on_tb_divide_clicked();
-
     void on_tb_power_clicked();
-
     void on_tb_equal_clicked();
-
     void on_tb_reset_clicked();
 
     void on_tb_ms_clicked();
-
     void on_tb_mc_clicked();
-
     void on_tn_mr_clicked();
 private:
     void SetOperation(Operation op);
