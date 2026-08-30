@@ -1,48 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-//ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-
-QString RemoveTrailingZeroes(const QString &text) {
-    for (qsizetype i = 0; i < text.size(); ++i) {
-        if (text[i] != '0') {
-            return text.mid(i);
-        }
-    }
-    return "";
-}
-
-QString NormalizeNumber(const QString &text) {
-    if (text.isEmpty()) {
-        return "0";
-    }
-    if (text.startsWith('.')) {
-        // Рекурсивный вызов.
-        return NormalizeNumber("0" + text);
-    }
-    if (text.startsWith('-')) {
-        // Рекурсивный вызов.
-        return "-" + NormalizeNumber(text.mid(1));
-    }
-    if (text.startsWith('0') && !text.startsWith("0.")) {
-        return NormalizeNumber(RemoveTrailingZeroes(text));
-    }
-    return text;
-}
-
-QString OpToString(Operation op) {
-    switch(op) {
-    case Operation::NO_OPERATION: return "";
-    case Operation::ADDITION: return "+";
-    case Operation::DIVISION: return "÷";
-    case Operation::MULTIPLICATION: return "×";
-    case Operation::SUBTRACTION: return "−";
-    case Operation::POWER: return "^";
-    default: return "";
-    }
-}
-
-//ОСНОВНОЙ РАЗДЕЛ
 
 //КОНСТРУТОР И ДЕСТРУКТОР
 
@@ -60,220 +18,160 @@ MainWindow::~MainWindow() {
 
 //МЕТОДЫ КЛАССА
 
-void MainWindow::AddText(const QString &suffix)
-{
-    input_number_ = input_number_ + suffix;
-    SetText(input_number_);
+void MainWindow::SetInputText(const std::string &text){
+    ui->l_result->setStyleSheet("");
+    ui->l_result->setText(QString::fromStdString(text));
 }
 
-void MainWindow::SetText(const QString& text){
+void MainWindow::SetErrorText(const std::string &text){
+    ui->l_result->setText(QString::fromStdString(text));
+    ui->l_result->setStyleSheet("color: Red;");
+}
 
-    if(current_operation_==Operation::NO_OPERATION){
-        input_number_ = NormalizeNumber(text);
-        active_number_ = input_number_.toDouble();
-        ui->l_result->setText(text);
-        ui->l_formula->setText("");
+void MainWindow::SetFormulaText(const std::string &text){
+    ui->l_formula->setText(QString::fromStdString(text));
+}
+
+void MainWindow::SetMemText(const std::string &text){
+    ui->l_memory->setText(QString::fromStdString(text));
+}
+
+void MainWindow::SetExtraKey(const std::optional<std::string> &key){
+    if(key == std::nullopt){
+        ui->tb_extra->setVisible(false);
     }
     else{
-        input_number_ = NormalizeNumber(text);
-        active_number_ = input_number_.toDouble();
-        ui->l_result->setText(text);
+        ui->tb_extra->setVisible(true);
+        ui->tb_extra->setText(QString::fromStdString(key.value()));
     }
 }
 
-void MainWindow::SetOperation(Operation op)
-{
-    if(current_operation_ == Operation::NO_OPERATION){
-        calculator_.Set(active_number_);
-        current_operation_=op;
-        QString new_formula = "%1 %2";
-        ui->l_formula->setText(new_formula.arg(calculator_.GetNumber()).arg(OpToString(op)));
-        input_number_ = "";
-    }
-    else{
-        current_operation_=op;
-        QString new_formula = "%1 %2";
-        ui->l_formula->setText(new_formula.arg(calculator_.GetNumber()).arg(OpToString(op)));
-
-    }
+void MainWindow::SetDigitKeyCallback(std::function<void (int)> cb){
+    digit_cb_ = cb;
 }
+
+void MainWindow::SetProcessOperationKeyCallback(std::function<void (Operation)> cb){
+    operation_cb_ = cb;
+}
+
+void MainWindow::SetProcessControlKeyCallback(std::function<void (ControlKey)> cb){
+    control_cb_ = cb;
+}
+
+void MainWindow::SetControllerCallback(std::function<void (ControllerType)> cb){
+    controller_cb_ = cb;
+}
+
 
 //СЛОТЫ
 
-void MainWindow::on_tb_one_clicked()
-{
-    AddText("1");
+
+void MainWindow::on_tb_one_clicked(){
+    digit_cb_(1);
 }
 
-void MainWindow::on_tb_two_clicked()
-{
-    AddText("2");
+void MainWindow::on_tb_two_clicked(){
+    digit_cb_(2);
 }
 
-void MainWindow::on_tb_three_clicked()
-{
-    AddText("3");
+void MainWindow::on_tb_three_clicked(){
+    digit_cb_(3);
 }
 
-void MainWindow::on_tb_four_clicked()
-{
-    AddText("4");
+void MainWindow::on_tb_four_clicked(){
+    digit_cb_(4);
 }
 
-void MainWindow::on_tb_five_clicked()
-{
-    AddText("5");
+void MainWindow::on_tb_five_clicked(){
+    digit_cb_(5);
 }
 
-void MainWindow::on_tb_six_clicked()
-{
-    AddText("6");
+void MainWindow::on_tb_six_clicked(){
+    digit_cb_(6);
 }
 
-void MainWindow::on_tb_seven_clicked()
-{
-    AddText("7");
+void MainWindow::on_tb_seven_clicked(){
+    digit_cb_(7);
 }
 
-void MainWindow::on_tb_eight_clicked()
-{
-    AddText("8");
+void MainWindow::on_tb_eight_clicked(){
+    digit_cb_(8);
 }
 
-void MainWindow::on_tb_nine_clicked()
-{
-    AddText("9");
+void MainWindow::on_tb_nine_clicked(){
+    digit_cb_(9);
 }
-void MainWindow::on_tb_zero_clicked()
-{
-    AddText("0");
+void MainWindow::on_tb_zero_clicked(){
+    digit_cb_(0);
 }
 
 
-void MainWindow::on_tb_comma_clicked()
-{
-    if(!input_number_.contains(".")){
-        AddText(".");
-    }
+void MainWindow::on_tb_add_clicked(){
+    operation_cb_(Operation::ADDITION);
 }
 
 
-
-
-void MainWindow::on_tb_negate_clicked()
-{
-    active_number_*=-1;
-    input_number_ = QString::number(active_number_);
-    SetText(input_number_);
+void MainWindow::on_tb_substract_clicked(){
+    operation_cb_(Operation::SUBTRACTION);
 }
 
 
-void MainWindow::on_tb_backspace_clicked()
-{
-    if(input_number_.size()){
-        input_number_.chop(1);
-        SetText(input_number_);
-    }
+void MainWindow::on_tb_multiplicate_clicked(){
+    operation_cb_(Operation::MULTIPLICATION);
 }
 
 
-
-
-void MainWindow::on_tb_add_clicked()
-{
-    SetOperation(Operation::ADDITION);
+void MainWindow::on_tb_divide_clicked(){
+    operation_cb_(Operation::DIVISION);
 }
 
 
-
-void MainWindow::on_tb_substract_clicked()
-{
-    SetOperation(Operation::SUBTRACTION);
+void MainWindow::on_tb_power_clicked(){
+    operation_cb_(Operation::POWER);
 }
 
 
-void MainWindow::on_tb_multiplicate_clicked()
-{
-    SetOperation(Operation::MULTIPLICATION);
+void MainWindow::on_tb_extra_clicked(){
+    control_cb_(ControlKey::EXTRA_KEY);
 }
 
 
-void MainWindow::on_tb_divide_clicked()
-{
-    SetOperation(Operation::DIVISION);
+void MainWindow::on_tb_negate_clicked(){
+    control_cb_(ControlKey::PLUS_MINUS);
 }
 
 
-void MainWindow::on_tb_power_clicked()
-{
-    SetOperation(Operation::POWER);
+void MainWindow::on_tb_backspace_clicked(){
+    control_cb_(ControlKey::BACKSPACE);
 }
 
 
-void MainWindow::on_tb_equal_clicked()
-{
-    if(current_operation_!=Operation::NO_OPERATION){
-        QString new_formula = "%1 %2 %3 =";
-        ui->l_formula->setText(new_formula.arg(calculator_.GetNumber()).arg(OpToString(current_operation_)).arg(active_number_));
-        switch(current_operation_) {
-        case Operation::NO_OPERATION:
-            break;
-        case Operation::ADDITION:
-            calculator_.Add(active_number_);
-            break;
-        case Operation::DIVISION:
-            calculator_.Div(active_number_);
-            break;
-        case Operation::MULTIPLICATION:
-            calculator_.Mul(active_number_);
-            break;
-        case Operation::SUBTRACTION:
-            calculator_.Sub(active_number_);
-            break;
-        case Operation::POWER:
-            calculator_.Pow(active_number_);
-            break;
-        default:
-            break;
-        }
-        active_number_ = calculator_.GetNumber();
-        ui->l_result->setText(QString::number(active_number_));
-        input_number_ = "";
-        current_operation_ = Operation::NO_OPERATION;
-    }
+void MainWindow::on_tb_equal_clicked(){
+    control_cb_(ControlKey::EQUALS);
 }
 
 
-void MainWindow::on_tb_reset_clicked()
-{
-    current_operation_ = Operation::NO_OPERATION;
-    ui->l_formula->setText("");
-    SetText("0");
+void MainWindow::on_tb_reset_clicked(){
+    control_cb_(ControlKey::CLEAR);
 }
 
 
-void MainWindow::on_tb_ms_clicked()
-{
-    memory_ = active_number_;
-    is_mem_initialized_ = true;
-    ui->l_memory->setText("M");
+void MainWindow::on_tb_ms_clicked(){
+    control_cb_(ControlKey::MEM_SAVE);
 }
 
 
 
-void MainWindow::on_tb_mc_clicked()
-{
-    is_mem_initialized_ = false;
-    ui->l_memory->setText("");
+void MainWindow::on_tb_mc_clicked(){
+    control_cb_(ControlKey::MEM_CLEAR);
 }
 
 
-void MainWindow::on_tn_mr_clicked()
-{
-    if(is_mem_initialized_){
-        active_number_ = memory_;
-        ui->l_result->setText(QString::number(memory_));
-        input_number_ = "";
-    }
+void MainWindow::on_tn_mr_clicked(){
+    control_cb_(ControlKey::MEM_LOAD);
 }
 
+void MainWindow::on_cmb_controller_currentIndexChanged(int)
+{
+    controller_cb_(FromString(ui->cmb_controller->currentText()));
+}

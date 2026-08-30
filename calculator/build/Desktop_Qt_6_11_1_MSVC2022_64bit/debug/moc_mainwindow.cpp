@@ -50,7 +50,7 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "on_tb_eight_clicked",
         "on_tb_nine_clicked",
         "on_tb_zero_clicked",
-        "on_tb_comma_clicked",
+        "on_tb_extra_clicked",
         "on_tb_negate_clicked",
         "on_tb_backspace_clicked",
         "on_tb_add_clicked",
@@ -62,7 +62,9 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "on_tb_reset_clicked",
         "on_tb_ms_clicked",
         "on_tb_mc_clicked",
-        "on_tn_mr_clicked"
+        "on_tn_mr_clicked",
+        "on_cmb_controller_currentIndexChanged",
+        "index"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -86,7 +88,7 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_tb_zero_clicked'
         QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_tb_comma_clicked'
+        // Slot 'on_tb_extra_clicked'
         QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_tb_negate_clicked'
         QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPrivate, QMetaType::Void),
@@ -112,6 +114,10 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         QtMocHelpers::SlotData<void()>(23, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_tn_mr_clicked'
         QtMocHelpers::SlotData<void()>(24, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_cmb_controller_currentIndexChanged'
+        QtMocHelpers::SlotData<void(int)>(25, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 26 },
+        }}),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -145,7 +151,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 7: _t->on_tb_eight_clicked(); break;
         case 8: _t->on_tb_nine_clicked(); break;
         case 9: _t->on_tb_zero_clicked(); break;
-        case 10: _t->on_tb_comma_clicked(); break;
+        case 10: _t->on_tb_extra_clicked(); break;
         case 11: _t->on_tb_negate_clicked(); break;
         case 12: _t->on_tb_backspace_clicked(); break;
         case 13: _t->on_tb_add_clicked(); break;
@@ -158,10 +164,10 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 20: _t->on_tb_ms_clicked(); break;
         case 21: _t->on_tb_mc_clicked(); break;
         case 22: _t->on_tn_mr_clicked(); break;
+        case 23: _t->on_cmb_controller_currentIndexChanged((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
         default: ;
         }
     }
-    (void)_a;
 }
 
 const QMetaObject *MainWindow::metaObject() const
@@ -183,14 +189,14 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 23)
+        if (_id < 24)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 23;
+        _id -= 24;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 23)
+        if (_id < 24)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 23;
+        _id -= 24;
     }
     return _id;
 }

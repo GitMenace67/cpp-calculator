@@ -1,32 +1,44 @@
 #pragma once
 
-#include "calculator.h"
-
-#include <QMainWindow>
-
+#include "enums.h"       // Нужны наши enum-ы (Operation, ControlKey и т.д.)
+#include <QMainWindow>   // Базовый класс окна
+#include <functional>    // Нужен для std::function (колбэки)
+#include <optional>
+// Реальзуйте класс главного окна.
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
 }
 QT_END_NAMESPACE
 
-enum class Operation {
-    NO_OPERATION,
-    MULTIPLICATION,
-    DIVISION,
-    SUBTRACTION,
-    ADDITION,
-    POWER,
-};
-
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget* parent = nullptr);
+    explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
-    void SetText(const QString& text);
-    void AddText(const QString& suffix);
+    void SetInputText(const std::string& text);
+    void SetErrorText(const std::string& text);
+    void SetFormulaText(const std::string& text);
+    void SetMemText(const std::string& text);
+    void SetExtraKey(const std::optional<std::string>& key);
+
+    void SetDigitKeyCallback(std::function<void(int key)> cb);
+    void SetProcessOperationKeyCallback(std::function<void(Operation key)> cb);
+    void SetProcessControlKeyCallback(std::function<void(ControlKey key)> cb);
+    void SetControllerCallback(std::function<void(ControllerType controller)> cb);
+
+    static ControllerType FromString(const QString& text) {
+        if (text == "double") return ControllerType::DOUBLE;
+        if (text == "float") return ControllerType::FLOAT;
+        if (text == "int") return ControllerType::INT;
+        if (text == "int64_t") return ControllerType::INT64_T;
+        if (text == "size_t") return ControllerType::SIZE_T;
+        if (text == "uint8_t") return ControllerType::UINT8_T;
+        if (text == "Rational") return ControllerType::RATIONAL;
+
+        return ControllerType::DOUBLE;
+    }
 
 private slots:
 
@@ -41,15 +53,12 @@ private slots:
     void on_tb_nine_clicked();
     void on_tb_zero_clicked();
 
-    void on_tb_comma_clicked();
+    void on_tb_extra_clicked();
     void on_tb_negate_clicked();
     void on_tb_backspace_clicked();
 
-
-
     void on_tb_add_clicked();
     void on_tb_substract_clicked();
-
     void on_tb_multiplicate_clicked();
     void on_tb_divide_clicked();
     void on_tb_power_clicked();
@@ -59,15 +68,15 @@ private slots:
     void on_tb_ms_clicked();
     void on_tb_mc_clicked();
     void on_tn_mr_clicked();
-private:
-    void SetOperation(Operation op);
+
+    void on_cmb_controller_currentIndexChanged(int index);
+
+
 
 private:
     Ui::MainWindow* ui;
-    Calculator calculator_;
-    QString input_number_="";
-    Number active_number_;
-    Operation current_operation_ = Operation::NO_OPERATION;
-    Number memory_;
-    bool is_mem_initialized_ = false;
+    std::function<void(int key)> digit_cb_;
+    std::function<void(Operation key)> operation_cb_;
+    std::function<void(ControlKey key)> control_cb_;
+    std::function<void(ControllerType controller)> controller_cb_;
 };
