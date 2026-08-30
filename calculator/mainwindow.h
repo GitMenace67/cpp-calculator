@@ -4,7 +4,7 @@
 #include <QMainWindow>   // Базовый класс окна
 #include <functional>    // Нужен для std::function (колбэки)
 #include <optional>
-// Реальзуйте класс главного окна.
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -17,6 +17,7 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
+
     void SetInputText(const std::string& text);
     void SetErrorText(const std::string& text);
     void SetFormulaText(const std::string& text);
@@ -28,17 +29,7 @@ public:
     void SetProcessControlKeyCallback(std::function<void(ControlKey key)> cb);
     void SetControllerCallback(std::function<void(ControllerType controller)> cb);
 
-    static ControllerType FromString(const QString& text) {
-        if (text == "double") return ControllerType::DOUBLE;
-        if (text == "float") return ControllerType::FLOAT;
-        if (text == "int") return ControllerType::INT;
-        if (text == "int64_t") return ControllerType::INT64_T;
-        if (text == "size_t") return ControllerType::SIZE_T;
-        if (text == "uint8_t") return ControllerType::UINT8_T;
-        if (text == "Rational") return ControllerType::RATIONAL;
-
-        return ControllerType::DOUBLE;
-    }
+    static ControllerType FromString(const QString& text);
 
 private slots:
 
@@ -70,8 +61,6 @@ private slots:
     void on_tn_mr_clicked();
 
     void on_cmb_controller_currentIndexChanged(int index);
-
-
 
 private:
     Ui::MainWindow* ui;

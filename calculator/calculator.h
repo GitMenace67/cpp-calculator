@@ -1,14 +1,12 @@
-
 #pragma once
 
 #include <string>
+#include <type_traits>
 #include <optional>
 #include "rational.h"
 #include "pow.h"
 
 using Error = std::string;
-
-// Реализация шаблонного калькулятора.
 
 template<typename Number>
 class Calculator{
@@ -31,24 +29,19 @@ public:
         return std::nullopt;
     }
     std::optional<Error> Div(Number n){
-        if constexpr(std::is_same_v<Number, int> || std::is_same_v<Number, uint8_t> ||
-                      std::is_same_v<Number, size_t> || std::is_same_v<Number, int64_t>){
+        if constexpr(std::is_integral_v<Number>){
             if(n==0){
                 return "Division by zero";
             }
-            else{
-                current_num_/=n;
-                return std::nullopt;
-            }
+            current_num_/=n;
+            return std::nullopt;
         }
         else if constexpr(std::is_same_v<Number, Rational>){
             if(n.GetNumerator()==0){
                 return "Division by zero";
             }
-            else{
-                current_num_/=n;
-                return std::nullopt;
-            }
+            current_num_/=n;
+            return std::nullopt;
         }
         else{
             current_num_= current_num_/n;
@@ -68,23 +61,18 @@ public:
             if(n.GetDenominator()!=1){
                 return "Fractional power is not supported";
             }
-            else{
-                current_num_ = TemplatePow(current_num_, n);
-                return std::nullopt;
-            }
+            current_num_ = TemplatePow(current_num_, n);
+            return std::nullopt;
         }
-        else if constexpr(std::is_same_v<Number, int> || std::is_same_v<Number, uint8_t> ||
-                             std::is_same_v<Number, size_t> || std::is_same_v<Number, int64_t>){
+        else if constexpr(std::is_integral_v<Number>){
             if(current_num_ == 0 && n == 0){
                 return "Zero power to zero";
             }
             if(n < 0){
                 return "Integer negative power";
             }
-            else{
-                current_num_ = TemplatePow(current_num_, n);
-                return std::nullopt;
-            }
+            current_num_ = TemplatePow(current_num_, n);
+            return std::nullopt;
         }
         else{
             if(n==0 && current_num_==0){
@@ -103,6 +91,6 @@ public:
         }
     }
 private:
-    Number current_num_;
+    Number current_num_ = {};
     std::optional<Number> mem_ = std::nullopt;
 };

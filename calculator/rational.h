@@ -3,7 +3,6 @@
 #include <iostream>
 #include <numeric>
 
-// Реализуйте класс Rational.
 class Rational{
 public:
     Rational() = default;
@@ -22,10 +21,10 @@ public:
         }
         Reduction();
     }
+
     Rational(int numerator):
         numerator_{numerator}
     {}
-    Rational(const Rational& r) = default;
 
     Rational Inv() const{
         if(numerator_<0){
@@ -39,6 +38,7 @@ public:
     int GetNumerator() const{
         return numerator_;
     }
+
     int GetDenominator() const{
         return denominator_;
     }
@@ -48,31 +48,9 @@ public:
         int b = GetDenominator() * r.GetNumerator();
         return a<=>b;
     }
+
     bool operator==(const Rational& r) const{
         return (GetNumerator()==r.GetNumerator())&&(GetDenominator()==r.GetDenominator());
-    }
-
-    Rational operator+(const Rational& r) const{
-        int a = GetNumerator() * r.GetDenominator();
-        int b = GetDenominator() * r.GetNumerator();
-        int c = GetDenominator()*r.GetDenominator();
-        return Rational(a+b,c);
-    }
-    Rational operator-(const Rational& r) const{
-        int a = GetNumerator() * r.GetDenominator();
-        int b = GetDenominator() * r.GetNumerator();
-        int c = GetDenominator()*r.GetDenominator();
-        return Rational(a-b,c);
-    }
-    Rational operator/(const Rational& r) const{
-        int a = GetNumerator() * r.GetDenominator();
-        int b = GetDenominator() * r.GetNumerator();
-        return Rational(a,b);
-    }
-    Rational operator*(const Rational& r) const{
-        int a = GetNumerator() * r.GetNumerator();
-        int b = GetDenominator() * r.GetDenominator();
-        return Rational(a,b);
     }
 
     Rational& operator+=(const Rational& r){
@@ -84,6 +62,7 @@ public:
         Reduction();
         return *this;
     }
+
     Rational& operator-=(const Rational& r){
         int a = GetNumerator() * r.GetDenominator();
         int b = GetDenominator() * r.GetNumerator();
@@ -93,6 +72,7 @@ public:
         Reduction();
         return *this;
     }
+
     Rational& operator*=(const Rational& r){
         int a = GetNumerator() * r.GetNumerator();
         int b = GetDenominator()*r.GetDenominator();
@@ -101,6 +81,7 @@ public:
         Reduction();
         return *this;
     }
+
     Rational& operator/=(const Rational& r){
         int a = GetNumerator() * r.GetDenominator();
         int b = GetDenominator() * r.GetNumerator();
@@ -110,16 +91,32 @@ public:
         return *this;
     }
 
-    Rational& operator=(const Rational& r){
-        numerator_ = r.GetNumerator();
-        denominator_ = r.GetDenominator();
-        Reduction();
+    Rational operator+(const Rational& r) const{
         return *this;
+    }
+
+    Rational operator-(const Rational& r) const{
+        Rational result = *this;
+        result-=r;
+        return result;
+    }
+
+    Rational operator/(const Rational& r) const{
+        Rational result = *this;
+        result/=r;
+        return result;
+    }
+
+    Rational operator*(const Rational& r) const{
+        Rational result = *this;
+        result*=r;
+        return result;
     }
 
     Rational operator+() const{
         return Rational(GetNumerator(), GetDenominator());
     }
+
     Rational operator-() const{
         return Rational{-1 * GetNumerator(), GetDenominator()};
     }
@@ -133,16 +130,17 @@ public:
         numerator_ /= divisor;
         denominator_ /= divisor;
     }
+
     friend std::istream& operator>>(std::istream& is, Rational& r);
     friend std::ostream& operator<<(std::ostream& os, const Rational& r);
 private:
-    int numerator_ = 0;
-    int denominator_ = 1;
+    int64_t numerator_ = 0;
+    int64_t denominator_ = 1;
 };
 
-
 inline std::istream& operator>>(std::istream& is, Rational& r){
-    int n, d;
+    int n = 0;
+    int d = 0;
     char ch =' ';
     is >> std::ws >> n;
     if(is.fail()){
