@@ -47,7 +47,6 @@ public:
             current_num_= current_num_/n;
             return std::nullopt;
         }
-
     }
     std::optional<Error> Mul(Number n){
         current_num_*=n;

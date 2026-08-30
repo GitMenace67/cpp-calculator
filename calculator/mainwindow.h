@@ -1,8 +1,8 @@
 #pragma once
 
-#include "enums.h"       // Нужны наши enum-ы (Operation, ControlKey и т.д.)
-#include <QMainWindow>   // Базовый класс окна
-#include <functional>    // Нужен для std::function (колбэки)
+#include "enums.h"
+#include <QMainWindow>
+#include <functional>
 #include <optional>
 
 QT_BEGIN_NAMESPACE
