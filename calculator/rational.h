@@ -140,8 +140,8 @@ private:
 };
 
 inline std::istream& operator>>(std::istream& is, Rational& r){
-    int n = 0;
-    int d = 0;
+    int64_t n = 0;
+    int64_t d = 0;
     char ch =' ';
     is >> std::ws >> n;
     if(is.fail()){
