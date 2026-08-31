@@ -2,12 +2,13 @@
 
 #include <iostream>
 #include <numeric>
+#include <cstdint>
 
 class Rational{
 public:
     Rational() = default;
 
-    Rational(int numerator, int denominator){
+    Rational(int64_t numerator, int64_t denominator){
         if(denominator==0){
             numerator_ = numerator;
         }
@@ -22,7 +23,7 @@ public:
         Reduction();
     }
 
-    Rational(int numerator):
+    Rational(int64_t numerator):
         numerator_{numerator}
     {}
 
@@ -30,22 +31,20 @@ public:
         if(numerator_<0){
             return Rational(-1 * denominator_, -1 * numerator_);
         }
-        else{
-            return Rational(denominator_, numerator_);
-        }
+        return Rational(denominator_, numerator_);
     }
 
-    int GetNumerator() const{
+    int64_t GetNumerator() const{
         return numerator_;
     }
 
-    int GetDenominator() const{
+    int64_t GetDenominator() const{
         return denominator_;
     }
 
     auto operator<=>(const Rational& r) const{
-        int a = GetNumerator() * r.GetDenominator();
-        int b = GetDenominator() * r.GetNumerator();
+        int64_t a = GetNumerator() * r.GetDenominator();
+        int64_t b = GetDenominator() * r.GetNumerator();
         return a<=>b;
     }
 
@@ -54,9 +53,9 @@ public:
     }
 
     Rational& operator+=(const Rational& r){
-        int a = GetNumerator() * r.GetDenominator();
-        int b = GetDenominator() * r.GetNumerator();
-        int c = GetDenominator()*r.GetDenominator();
+        int64_t a = GetNumerator() * r.GetDenominator();
+        int64_t b = GetDenominator() * r.GetNumerator();
+        int64_t c = GetDenominator()*r.GetDenominator();
         numerator_ = a + b;
         denominator_ = c;
         Reduction();
@@ -64,9 +63,9 @@ public:
     }
 
     Rational& operator-=(const Rational& r){
-        int a = GetNumerator() * r.GetDenominator();
-        int b = GetDenominator() * r.GetNumerator();
-        int c = GetDenominator()*r.GetDenominator();
+        int64_t a = GetNumerator() * r.GetDenominator();
+        int64_t b = GetDenominator() * r.GetNumerator();
+        int64_t c = GetDenominator()*r.GetDenominator();
         numerator_ = a - b;
         denominator_ = c;
         Reduction();
@@ -74,8 +73,8 @@ public:
     }
 
     Rational& operator*=(const Rational& r){
-        int a = GetNumerator() * r.GetNumerator();
-        int b = GetDenominator()*r.GetDenominator();
+        int64_t a = GetNumerator() * r.GetNumerator();
+        int64_t b = GetDenominator()*r.GetDenominator();
         numerator_ = a;
         denominator_ = b;
         Reduction();
@@ -83,8 +82,8 @@ public:
     }
 
     Rational& operator/=(const Rational& r){
-        int a = GetNumerator() * r.GetDenominator();
-        int b = GetDenominator() * r.GetNumerator();
+        int64_t a = GetNumerator() * r.GetDenominator();
+        int64_t b = GetDenominator() * r.GetNumerator();
         numerator_ = a;
         denominator_ = b;
         Reduction();
@@ -92,7 +91,9 @@ public:
     }
 
     Rational operator+(const Rational& r) const{
-        return *this;
+        Rational result = *this;
+        result+=r;
+        return result;
     }
 
     Rational operator-(const Rational& r) const{
@@ -114,7 +115,7 @@ public:
     }
 
     Rational operator+() const{
-        return Rational(GetNumerator(), GetDenominator());
+        return *this;
     }
 
     Rational operator-() const{
@@ -126,7 +127,7 @@ public:
             numerator_ = -numerator_;
             denominator_ = -denominator_;
         }
-        const int divisor = std::gcd(numerator_, denominator_);
+        const int64_t divisor = std::gcd(numerator_, denominator_);
         numerator_ /= divisor;
         denominator_ /= divisor;
     }

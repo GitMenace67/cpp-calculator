@@ -1,8 +1,18 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QHash>
+
+const QHash<QString, ControllerType> text_to_controller_type = {{QString("uint8_t"), ControllerType::UINT8_T},
+    {QString("int"), ControllerType::INT},
+    {QString("int64_t"), ControllerType::INT64_T},
+    {QString("size_t"), ControllerType::SIZE_T},
+    {QString("double"), ControllerType::DOUBLE},
+    {QString("float"), ControllerType::FLOAT},
+    {QString("Rational"), ControllerType::RATIONAL}
+};
 
 ControllerType MainWindow::FromString(const QString& text) {
-    return text_to_contrtype.value(text, ControllerType::DOUBLE);
+    return text_to_controller_type.value(text, ControllerType::DOUBLE);
 }
 
 MainWindow::MainWindow(QWidget* parent)
